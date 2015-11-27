@@ -228,7 +228,7 @@ PLAN9_x11_OBJS = \
 		x11-kernel.o \
 		x11-keysym2rune.o \
 	)
-PLAN9_x11_LIBS = -L/usr/X11R6/lib -L/usr/local/lib -lX11
+PLAN9_x11_LIBS = -L/usr/X11R6/lib -L/usr/local/lib -lX11 -lxcb -lXau -lXdmcp
 
 PLAN9_osx_OBJS =\
 	$(addprefix 9vx/osx/, \
@@ -254,7 +254,7 @@ PLAN9_DEPS = \
 	libvx32/libvx32.a \
 
 9vx/9vx: $(PLAN9_DEPS)
-	$(HOST_CC) -o $@ $(HOST_LDFLAGS) $(PLAN9_DEPS) $(PLAN9_GUI_LIBS) $(PLAN9_IP_LIBS) -lpthread 
+	$(HOST_CC) -static -o $@ $(HOST_LDFLAGS) $(PLAN9_DEPS) $(PLAN9_GUI_LIBS) $(PLAN9_IP_LIBS) -lpthread -ldl
 
 9vx/a/%.o: 9vx/a/%.c
 	$(HOST_CC) $(HOST_CFLAGS) -I. -I9vx -I9vx/a -Wall -Wno-missing-braces -c -o $@ $<
