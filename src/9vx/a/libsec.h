@@ -127,6 +127,10 @@ void	des3ECBdecrypt(uchar*, int, DES3state*);
 enum
 {
 	SHA1dlen=	20,	/* SHA digest length */
+	SHA2_224dlen=	28,	/* SHA-224 digest length */
+	SHA2_256dlen=	32,	/* SHA-256 digest length */
+	SHA2_384dlen=	48,	/* SHA-384 digest length */
+	SHA2_512dlen=	64,	/* SHA-512 digest length */
 	MD4dlen=	16,	/* MD4 digest length */
 	MD5dlen=	16,	/* MD5 digest length */
 	AESdlen=	16,	/* TODO: see rfc */
@@ -138,14 +142,21 @@ typedef struct DigestState DigestState;
 struct DigestState
 {
 	uvlong	len;
-	uint32	state[5];
-	uchar	buf[128];
+	union {
+		uint32	state[8];
+		uint64	bstate[8];
+	};
+	uchar	buf[256];
 	int	blen;
 	char	malloced;
 	char	seeded;
 };
 typedef struct DigestState SHAstate;	/* obsolete name */
 typedef struct DigestState SHA1state;
+typedef struct DigestState SHA2_224state;
+typedef struct DigestState SHA2_256state;
+typedef struct DigestState SHA2_384state;
+typedef struct DigestState SHA2_512state;
 typedef struct DigestState MD5state;
 typedef struct DigestState MD4state;
 typedef struct DigestState AEShstate;
@@ -153,14 +164,20 @@ typedef struct DigestState AEShstate;
 DigestState*	md4(uchar*, ulong, uchar*, DigestState*);
 DigestState*	md5(uchar*, ulong, uchar*, DigestState*);
 DigestState*	sha1(uchar*, ulong, uchar*, DigestState*);
-DigestState*	aes(uchar*, ulong, uchar*, DigestState*);
+DigestState*	sha2_224(uchar*, ulong, uchar*, DigestState*);
+DigestState*	sha2_256(uchar*, ulong, uchar*, DigestState*);
+DigestState*	sha2_384(uchar*, ulong, uchar*, DigestState*);
+DigestState*	sha2_512(uchar*, ulong, uchar*, DigestState*);
 DigestState*	hmac_x(uchar *p, ulong len, uchar *key, ulong klen,
 			uchar *digest, DigestState *s,
 			DigestState*(*x)(uchar*, ulong, uchar*, DigestState*),
 			int xlen);
 DigestState*	hmac_md5(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
 DigestState*	hmac_sha1(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
-DigestState*	hmac_aes(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
+DigestState*	hmac_sha2_224(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
+DigestState*	hmac_sha2_256(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
+DigestState*	hmac_sha2_384(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
+DigestState*	hmac_sha2_512(uchar*, ulong, uchar*, ulong, uchar*, DigestState*);
 char*		md5pickle(MD5state*);
 MD5state*	md5unpickle(char*);
 char*		sha1pickle(SHA1state*);
@@ -356,6 +373,7 @@ typedef struct TLSconn{
 	uchar	*sessionKey;
 	int	sessionKeylen;
 	char	*sessionConst;
+	char	*serverName;
 } TLSconn;
 
 /* tlshand.c */
