@@ -105,7 +105,10 @@ fsattach(char *spec)
 	Chan *c;
 	UnixFd *ufd;
 	int dev;
-	
+
+	if(!iseve())
+		error(Eperm);
+
 	dev = 1;
 	if(spec && spec[0]){
 		snprint(up->genbuf, sizeof up->genbuf, "no file system #%C%s", FsChar, spec);
