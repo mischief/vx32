@@ -34,12 +34,13 @@ VX32_OBJS = \
 VX32_DEPS := libvx32/libvx32.a
 VX32_INST := $(prefix)/lib/libvx32.a
 
-CLEAN_FILES += $(VX32_OBJS) $(VX32_DEPS) libvx32/asm.h
+CLEAN_FILES += $(VX32_OBJS) $(VX32_DEPS) libvx32/asm.h libvx32/asm-sym.[sc]
 
 all: $(VX32_DEPS)
 install: $(VX32_INST)
 
 libvx32/rts.o: libvx32/asm.h
+libvx32/$(VX32_RUN): libvx32/asm.h
 
 libvx32/%.o: libvx32/%.c
 	$(HOST_CC) -Ilibvx32 -c $(HOST_CFLAGS) -o $@ $<
