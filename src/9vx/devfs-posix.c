@@ -753,6 +753,7 @@ adduser(struct passwd *p)
 	User *u;
 
 	u = smalloc(sizeof(*u));
+
 	u->id = p->pw_uid;
 	kstrdup(&u->name, p->pw_name);
 	u->next = utab[p->pw_uid%nelem(utab)];
@@ -779,31 +780,37 @@ uname2user(char *name)
 {
 	int i;
 	User *u;
-	struct passwd *p;
+	struct passwd pwd, *result;
+	char buf[512];
 
 	for(i=0; i<nelem(utab); i++)
 		for(u=utab[i]; u; u=u->next)
 			if(strcmp(u->name, name) == 0)
 				return u;
 
-	if((p = getpwnam(name)) == nil)
+	getpwnam_r(name, &pwd, buf, sizeof(buf), &result);
+	if(result == NULL)
 		return nil;
-	return adduser(p);
+
+	return adduser(result);
 }
 
 static User*
 uid2user(int id)
 {
 	User *u;
-	struct passwd *p;
+	struct passwd pwd, *result;
+	char buf[512];
 
 	for(u=utab[id%nelem(utab)]; u; u=u->next)
 		if(u->id == id)
 			return u;
 
-	if((p = getpwuid(id)) == nil)
+	getpwuid_r(id, &pwd, buf, sizeof(buf), &result);
+	if(result == NULL)
 		return nil;
-	return adduser(p);
+
+	return adduser(result);
 }
 
 static User*
@@ -811,38 +818,44 @@ gname2user(char *name)
 {
 	int i;
 	User *u;
-	struct group *g;
+	struct group grp, *result;
+	char buf[512];
 
 	for(i=0; i<nelem(gtab); i++)
 		for(u=gtab[i]; u; u=u->next)
 			if(strcmp(u->name, name) == 0)
 				return u;
 
-	if((g = getgrnam(name)) == nil)
+	getgrnam_r(name, &grp, buf, sizeof(buf), &result);
+	if(result == NULL)
 		return nil;
-	return addgroup(g);
+
+	return addgroup(result);
 }
 
 static User*
 gid2user(int id)
 {
 	User *u;
-	struct group *g;
+	struct group grp, *result;
+	char buf[512];
 
 	for(u=gtab[id%nelem(gtab)]; u; u=u->next)
 		if(u->id == id)
 			return u;
 
-	if((g = getgrgid(id)) == nil)
+	getgrgid_r(id, &grp, buf, sizeof(buf), &result);
+	if(result == NULL)
 		return nil;
-	return addgroup(g);
+
+	return addgroup(result);
 }
 
 static char*
 uidtoname(int uid)
 {
 	User *u;
-	
+
 	u = uid2user(uid);
 	if(u == nil)
 		return "?";
@@ -853,7 +866,7 @@ static char*
 gidtoname(int gid)
 {
 	User *u;
-	
+
 	u = gid2user(gid);
 	if(u == nil)
 		return "?";
@@ -864,7 +877,7 @@ static int
 nametouid(char *name)
 {
 	User *u;
-	
+
 	u = uname2user(name);
 	if(u == nil)
 		return -1;
@@ -875,7 +888,7 @@ static int
 nametogid(char *name)
 {
 	User *u;
-	
+
 	u = gname2user(name);
 	if(u == nil)
 		return -1;
@@ -890,7 +903,7 @@ disksize(int fd, struct stat *st)
 	uvlong u64;
 	long l;
 	struct hd_geometry geo;
-	
+
 	memset(&geo, 0, sizeof geo);
 	l = 0;
 	u64 = 0;
@@ -911,7 +924,7 @@ static vlong
 disksize(int fd, struct stat *st)
 {
 	off_t mediasize;
-	
+
 	if(ioctl(fd, DIOCGMEDIASIZE, &mediasize) >= 0)
 		return mediasize;
 	return 0;
