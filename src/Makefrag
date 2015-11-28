@@ -54,7 +54,7 @@ INSTALL = install
 all: 
 
 # Install libvx32 too
-install: 9vx/install libvxc/install vxlinux/install vxrun/install
+install: 9vx/install libvxc/install
 
 # Eliminate default suffix rules
 .SUFFIXES:
@@ -62,17 +62,10 @@ install: 9vx/install libvxc/install vxlinux/install vxrun/install
 # Delete target files if there is an error (or make is interrupted)
 .DELETE_ON_ERROR:
 
-
 # Include Makefrags for subdirectories
 include libvxc/Makefrag
 include libvx32/Makefrag
-include vxrun/Makefrag
-include vxlinux/Makefrag
-include vxa/Makefrag		# VXA decoders
-include hash/Makefrag		# cryptographic hash algorithms
-include micro/Makefrag		# microbenchmarks
 include 9vx/Makefrag	# Plan 9 VX
-include test/Makefrag		# vx32 tests
 
 DEPS_FILES := $(wildcard */*.d */*/*.d */*/*/*.d)
 CLEAN_FILES += .deps $(DEPS_FILES)
