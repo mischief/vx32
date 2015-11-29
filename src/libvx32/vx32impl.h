@@ -2,7 +2,7 @@
 #define VX32_IMPL_H
 
 #include <setjmp.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <ucontext.h>
 
 // Parameters tweakable for performance

@@ -1,4 +1,3 @@
-#include <sys/signal.h>
 #include <ucontext.h>
 #include <stdio.h>
 #include <stdlib.h>
