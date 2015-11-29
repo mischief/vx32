@@ -6,6 +6,8 @@
 #include <signal.h>
 #include <assert.h>
 #include <ucontext.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 #include <sys/ucontext.h>
 #include <asm/ldt.h>
 #include <errno.h>
@@ -14,7 +16,11 @@
 #include "vx32impl.h"
 #include "os.h"
 
-extern int modify_ldt(int, void*, unsigned long);
+static inline int
+modify_ldt(int func, void *ptr, unsigned long bytecount)
+{
+	return syscall(SYS_modify_ldt, func, ptr, bytecount);
+}
 
 int vxemu_map(vxemu *emu, vxmmap *mm)
 {
