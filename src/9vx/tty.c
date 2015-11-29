@@ -4,7 +4,6 @@
 
 #include	"u.h"
 #include	<termios.h>
-#include	<sys/termios.h>
 #include	"lib.h"
 #include	"mem.h"
 #include	"dat.h"
