@@ -5,7 +5,7 @@
 
 #include <inttypes.h>
 #include <sys/types.h>
-#include <sys/signal.h>
+#include <signal.h>
 
 // VX memory access permission bits
 #define VXPERM_READ  0x01
