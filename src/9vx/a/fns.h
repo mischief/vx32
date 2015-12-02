@@ -209,8 +209,8 @@ extern int tracelock;
 #define psleep(x)	lockgen(psleep, (x))
 // #define lock(x)		lockgen(lock, (x))
 // #define unlock(x)	lockgen(unlock, (x))
-#define lock(x) __lock(x)
-#define unlock(x) __unlock(x)
+//#define lock(x) __lock(x)
+//#define unlock(x) __unlock(x)
 #define canqlock	__canqlock
 #define canrlock	__canrlock
 
